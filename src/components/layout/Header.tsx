@@ -41,7 +41,7 @@ export default function Header() {
             <img 
               src="/cynkarelogo.PNG" 
               alt="Cynkare" 
-              className="h-16 md:h-20 w-auto"
+              className="h-32 md:h-40 w-auto"
             />
           </Link>
 

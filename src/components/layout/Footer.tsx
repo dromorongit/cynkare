@@ -18,7 +18,7 @@ export default function Footer() {
             <img 
               src="/cynkarelogo.PNG" 
               alt="Cynkare" 
-              className="h-20 w-auto mb-4"
+              className="h-40 w-auto mb-4"
             />
             <p className="text-text/70 mb-6 max-w-md">
               Premium skincare and beauty essentials for glowing, flawless skin. 
