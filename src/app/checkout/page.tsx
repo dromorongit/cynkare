@@ -69,7 +69,7 @@ export default function CheckoutPage() {
         <motion.h1
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="font-heading text-3xl font-bold text-text mb-8"
+          className="text-section font-heading text-text mb-8"
         >
           Checkout
         </motion.h1>

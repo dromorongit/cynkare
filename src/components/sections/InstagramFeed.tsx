@@ -26,7 +26,7 @@ export default function InstagramFeed() {
           <div className="inline-flex items-center justify-center w-16 h-16 bg-accent/20 text-accent mb-6">
             <Instagram className="w-8 h-8" />
           </div>
-          <h2 className="font-heading text-3xl md:text-4xl font-bold text-text mb-4">
+          <h2 className="text-section font-heading text-text mb-4">
             Follow Us on Instagram
           </h2>
           <p className="text-text/60 mb-6">

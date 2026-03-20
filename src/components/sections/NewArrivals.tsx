@@ -32,10 +32,10 @@ export default function NewArrivals() {
           className="flex items-center justify-between mb-12"
         >
           <div>
-            <h2 className="font-heading text-3xl md:text-4xl font-bold text-text mb-4">
+            <h2 className="text-section font-heading text-text mb-4">
               New Arrivals
             </h2>
-            <p className="text-text/60 max-w-2xl">
+            <p className="text-body text-text/60 max-w-2xl">
               Be the first to discover our latest skincare innovations
             </p>
           </div>

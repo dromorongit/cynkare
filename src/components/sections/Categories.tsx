@@ -17,10 +17,10 @@ export default function Categories() {
           transition={{ duration: 0.6 }}
           className="text-center mb-12"
         >
-          <h2 className="font-heading text-3xl md:text-4xl font-bold text-text mb-4">
+          <h2 className="text-section font-heading text-text mb-4">
             Shop by Category
           </h2>
-          <p className="text-text/60 max-w-2xl mx-auto">
+          <p className="text-body text-text/60 max-w-2xl mx-auto">
             Explore our curated collection of premium skincare and beauty products
           </p>
         </motion.div>

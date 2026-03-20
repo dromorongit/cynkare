@@ -39,10 +39,10 @@ export default function AboutPage() {
             transition={{ duration: 0.6 }}
             className="text-center max-w-3xl mx-auto"
           >
-            <h1 className="font-heading text-4xl md:text-5xl font-bold text-text mb-6">
+            <h1 className="text-hero font-heading text-text mb-6">
               About Cynkare
             </h1>
-            <p className="text-lg text-text/70">
+            <p className="text-body text-text/70">
               We are dedicated to helping you achieve radiant, flawless skin through 
               premium skincare products and beauty essentials.
             </p>
@@ -76,10 +76,10 @@ export default function AboutPage() {
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: 0.2 }}
             >
-              <h2 className="font-heading text-3xl font-bold text-text mb-6">
+              <h2 className="text-section font-heading text-text mb-6">
                 Our Story
               </h2>
-              <div className="space-y-4 text-text/70">
+              <div className="space-y-4 text-body text-text/70">
                 <p>
                   Cynkare was founded with a simple mission: to provide premium skincare 
                   solutions that help people achieve their best skin. We believe that 
@@ -116,10 +116,10 @@ export default function AboutPage() {
             transition={{ duration: 0.6 }}
             className="text-center mb-16"
           >
-            <h2 className="font-heading text-3xl md:text-4xl font-bold text-text mb-4">
+            <h2 className="text-section font-heading text-text mb-4">
               Our Values
             </h2>
-            <p className="text-text/60 max-w-2xl mx-auto">
+            <p className="text-body text-text/60 max-w-2xl mx-auto">
               The principles that guide everything we do
             </p>
           </motion.div>

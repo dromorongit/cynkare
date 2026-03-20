@@ -56,7 +56,7 @@ function ShopContent() {
           <motion.h1
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="font-heading text-4xl font-bold text-text"
+            className="text-hero font-heading text-text"
           >
             Shop
           </motion.h1>

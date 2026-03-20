@@ -33,7 +33,7 @@ export default function Hero() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3, duration: 0.6 }}
-              className="font-heading text-4xl md:text-5xl lg:text-6xl font-bold text-text leading-tight mb-6"
+              className="text-hero font-heading text-text mb-6"
             >
               Flawless Skin{' '}
               <span className="text-accent">Starts Here</span>
@@ -42,7 +42,7 @@ export default function Hero() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4, duration: 0.6 }}
-              className="text-lg text-text/70 mb-8 max-w-lg"
+              className="text-body text-text/70 mb-8 max-w-lg"
             >
               Premium skincare and beauty essentials for your glow. 
               Discover our curated collection of luxury products designed to 

@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Libre+Baskerville:wght@400;700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -10,15 +10,135 @@
   --primary: #F8F5F0;
   --secondary: #EDE3D9;
   --accent: #D6C3B3;
+  
+  /* Typography Colors */
+  --text-primary: #1A1A1A;
+  --text-secondary: #4A4A4A;
+  --text-muted: #6B6B6B;
 }
 
+/* Base Typography System */
 body {
   color: var(--foreground);
   background: var(--background);
+  font-family: 'Libre Baskerville', Georgia, serif;
+  line-height: 1.7;
+  font-size: 1rem;
+}
+
+/* Heading Font - Didot (via Playfair Display) */
+h1, h2, h3, h4, h5, h6,
+.heading-font {
+  font-family: 'Playfair Display', Didot, serif;
+  font-weight: 500;
+  line-height: 1.3;
+  color: var(--text-primary);
+}
+
+/* Body Font - Libre Baskerville */
+p, .body-font,
+.product-description,
+.product-title {
+  font-family: 'Libre Baskerville', Georgia, serif;
+  line-height: 1.7;
+}
+
+/* UI Font - System UI */
+button, .ui-font,
+.nav-link, .btn, .price,
+.nav-links a, .form-input {
   font-family: system-ui, -apple-system, San Francisco, Helvetica, Arial, sans-serif;
 }
 
+/* Typography Scale */
+@layer components {
+  /* Hero Heading - Didot */
+  .text-hero {
+    font-family: 'Playfair Display', Didot, serif;
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    font-weight: 500;
+    line-height: 1.2;
+    letter-spacing: 0.5px;
+  }
+
+  /* Section Heading - Didot */
+  .text-section {
+    font-family: 'Playfair Display', Didot, serif;
+    font-size: 2rem;
+    font-weight: 500;
+    line-height: 1.3;
+  }
+
+  /* Product Title - Libre Baskerville */
+  .text-product-title {
+    font-family: 'Libre Baskerville', Georgia, serif;
+    font-size: 1.1rem;
+    font-weight: 400;
+    line-height: 1.5;
+  }
+
+  /* Body Text - Libre Baskerville */
+  .text-body {
+    font-family: 'Libre Baskerville', Georgia, serif;
+    font-size: 1rem;
+    line-height: 1.7;
+  }
+
+  /* Price Text - System UI */
+  .text-price {
+    font-family: system-ui, -apple-system, San Francisco, Helvetica, Arial, sans-serif;
+    font-size: 1rem;
+    font-weight: 500;
+  }
+
+  /* Button Text - System UI */
+  .text-button {
+    font-family: system-ui, -apple-system, San Francisco, Helvetica, Arial, sans-serif;
+    font-size: 0.9rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+
+  /* Navigation - System UI */
+  .nav-link {
+    font-family: system-ui, -apple-system, San Francisco, Helvetica, Arial, sans-serif;
+    font-size: 0.95rem;
+    font-weight: 500;
+    letter-spacing: 0.3px;
+  }
+
+  /* Small Text */
+  .text-small {
+    font-family: 'Libre Baskerville', Georgia, serif;
+    font-size: 0.875rem;
+    line-height: 1.6;
+  }
+
+  /* Caption */
+  .text-caption {
+    font-family: system-ui, -apple-system, San Francisco, Helvetica, Arial, sans-serif;
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+}
+
+/* Spacing Rules */
 @layer utilities {
+  .section-spacing {
+    margin-bottom: 4rem;
+  }
+
+  .element-spacing {
+    margin-bottom: 1.5rem;
+  }
+
+  .max-width-text {
+    max-width: 600px;
+  }
+
   .text-balance {
     text-wrap: balance;
   }
@@ -41,4 +161,31 @@ body {
 
 ::-webkit-scrollbar-thumb:hover {
   background: #b8a89c;
+}
+
+/* Mobile Responsive Typography */
+@media (max-width: 768px) {
+  .text-hero {
+    font-size: 2.25rem;
+    line-height: 1.25;
+  }
+
+  .text-section {
+    font-size: 1.75rem;
+  }
+
+  .text-product-title {
+    font-size: 1rem;
+  }
+
+  body {
+    line-height: 1.8;
+  }
+}
+
+/* Tablet Responsive Typography */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .text-hero {
+    font-size: clamp(2.5rem, 4vw, 3.5rem);
+  }
 }

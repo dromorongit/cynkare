@@ -106,7 +106,7 @@ export default function ProductPage() {
             transition={{ duration: 0.5, delay: 0.2 }}
           >
             <p className="text-accent text-sm font-medium mb-2">{product.category}</p>
-            <h1 className="font-heading text-3xl md:text-4xl font-bold text-text mb-4">
+            <h1 className="text-section font-heading text-text mb-4">
               {product.name}
             </h1>
             
@@ -149,7 +149,7 @@ export default function ProductPage() {
             </div>
 
             {/* Description */}
-            <p className="text-text/70 mb-8 leading-relaxed">
+            <p className="text-body text-text/70 mb-8">
               {product.description}
             </p>
 
@@ -209,7 +209,7 @@ export default function ProductPage() {
         {/* Related Products */}
         {relatedProducts.length > 0 && (
           <div className="mt-20">
-            <h2 className="font-heading text-2xl font-bold text-text mb-8">
+            <h2 className="text-section font-heading text-text mb-8">
               Related Products
             </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">

@@ -17,7 +17,7 @@ export default function ContactPage() {
           <motion.h1
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="font-heading text-4xl font-bold text-text"
+            className="text-hero font-heading text-text"
           >
             Contact Us
           </motion.h1>
@@ -33,7 +33,7 @@ export default function ContactPage() {
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.6 }}
           >
-            <h2 className="font-heading text-2xl font-bold text-text mb-8">
+            <h2 className="text-section font-heading text-text mb-8">
               Get in Touch
             </h2>
             
@@ -67,7 +67,7 @@ export default function ContactPage() {
                 </div>
                 <div>
                   <h3 className="font-medium text-text">Email</h3>
-                  <p className="text-text/60">hello@cynkare.com</p>
+                  <p className="text-text/60">thecynkare@gmail.com</p>
                 </div>
               </div>
             </div>
@@ -121,7 +121,7 @@ export default function ContactPage() {
             transition={{ duration: 0.6, delay: 0.2 }}
           >
             <div className="bg-secondary/30 p-8">
-              <h2 className="font-heading text-2xl font-bold text-text mb-6">
+              <h2 className="text-section font-heading text-text mb-6">
                 Send us a Message
               </h2>
               <form className="space-y-6">

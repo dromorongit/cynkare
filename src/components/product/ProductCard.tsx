@@ -71,11 +71,11 @@ export default function ProductCard({ product, index = 0 }: ProductCardProps) {
           {/* Product Info */}
           <div className="p-4">
             <p className="text-sm text-gray-500 mb-1">{product.category}</p>
-            <h3 className="font-heading text-lg text-text group-hover:text-accent transition-colors duration-300 line-clamp-1">
+            <h3 className="text-product-title font-body text-text group-hover:text-accent transition-colors duration-300 line-clamp-1">
               {product.name}
             </h3>
             <div className="flex items-center gap-2 mt-2">
-              <span className="text-lg font-medium">{formatPrice(convertToGHS(product.price))}</span>
+              <span className="text-price">{formatPrice(convertToGHS(product.price))}</span>
               {product.originalPrice && (
                 <span className="text-sm text-gray-400 line-through">
                   {formatPrice(convertToGHS(product.originalPrice))}
