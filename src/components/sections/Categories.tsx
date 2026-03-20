@@ -25,8 +25,8 @@ export default function Categories() {
           </p>
         </motion.div>
 
-        {/* Categories Grid */}
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 md:gap-6">
+        {/* Categories Vertical Stack - Image Banners */}
+        <div className="flex flex-col gap-6">
           {categories.map((category, index) => (
             <motion.div
               key={category.id}
@@ -36,23 +36,23 @@ export default function Categories() {
               transition={{ duration: 0.4, delay: index * 0.1 }}
             >
               <Link href={`/shop?category=${category.slug}`}>
-                <div className="group relative aspect-square overflow-hidden bg-secondary">
+                <div className="group relative h-[180px] rounded-lg overflow-hidden">
                   <Image
                     src={category.image}
                     alt={category.name}
                     fill
-                    className="object-cover transition-transform duration-500 group-hover:scale-110"
+                    className="object-cover transition-transform duration-500 group-hover:scale-105"
                   />
-                  {/* Overlay */}
-                  <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                    <span className="text-white font-medium text-center px-4">
+                  {/* Dark Overlay */}
+                  <div className="absolute inset-0 bg-black/30 group-hover:bg-black/40 transition-colors duration-300" />
+                  
+                  {/* Centered Button */}
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <span className="bg-white text-black px-5 py-2.5 rounded-lg font-medium text-sm shadow-lg group-hover:scale-105 transition-transform duration-300">
                       {category.name}
                     </span>
                   </div>
                 </div>
-                <h3 className="mt-3 text-center font-medium text-text group-hover:text-accent transition-colors duration-300">
-                  {category.name}
-                </h3>
               </Link>
             </motion.div>
           ))}
