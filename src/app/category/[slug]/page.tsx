@@ -3,17 +3,20 @@
 import { useState, useMemo, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { SlidersHorizontal, X } from 'lucide-react';
-import ProductCard from '@/components/product/ProductCard';
-import { products, categories } from '@/lib/products';
 import Link from 'next/link';
+import { SlidersHorizontal, X, ChevronRight, ArrowLeft } from 'lucide-react';
+import ProductCard from '@/components/product/ProductCard';
+import { products, categoriesWithSubcategories, getCategoryBySlug } from '@/lib/products';
 import { SortOption } from '@/types';
 
-function ShopContent() {
+function CategoryContent() {
   const searchParams = useSearchParams();
-  const categoryParam = searchParams.get('category');
+  const categorySlug = searchParams.get('category');
+  const subcategoryParam = searchParams.get('subcategory');
   
-  const [selectedCategory, setSelectedCategory] = useState<string>(categoryParam || 'all');
+  const category = getCategoryBySlug(categorySlug || '');
+  
+  const [selectedSubcategory, setSelectedSubcategory] = useState<string>(subcategoryParam || 'all');
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 200]);
   const [sortBy, setSortBy] = useState<SortOption>('newest');
   const [showFilters, setShowFilters] = useState(false);
@@ -22,9 +25,19 @@ function ShopContent() {
     let filtered = [...products];
 
     // Filter by category
-    if (selectedCategory !== 'all') {
+    if (categorySlug) {
+      const categoryName = categoriesWithSubcategories.find(
+        (c) => c.slug === categorySlug
+      )?.name;
+      if (categoryName) {
+        filtered = filtered.filter((p) => p.category === categoryName);
+      }
+    }
+
+    // Filter by subcategory
+    if (selectedSubcategory !== 'all') {
       filtered = filtered.filter(
-        (p) => p.category.toLowerCase().replace(/\s+/g, '-') === selectedCategory
+        (p) => p.subcategory?.toLowerCase().replace(/\s+/g, '-') === selectedSubcategory
       );
     }
 
@@ -39,7 +52,7 @@ function ShopContent() {
         filtered.sort((a, b) => a.price - b.price);
         break;
       case 'price_high':
-        filtered.sort((a, b) => b.price - a.price);
+        filtered.sort((b, a) => a.price - b.price);
         break;
       case 'newest':
       default:
@@ -47,25 +60,92 @@ function ShopContent() {
     }
 
     return filtered;
-  }, [selectedCategory, priceRange, sortBy]);
+  }, [categorySlug, selectedSubcategory, priceRange, sortBy]);
+
+  if (!category) {
+    return (
+      <div className="min-h-screen pt-20 flex items-center justify-center">
+        <div className="text-center">
+          <h2 className="text-2xl font-heading text-text mb-4">Category not found</h2>
+          <Link href="/shop" className="text-accent hover:underline">
+            Return to Shop
+          </Link>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen pt-20">
       {/* Header */}
       <div className="bg-secondary/30 py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.h1
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-hero font-heading text-text"
           >
-            Shop
-          </motion.h1>
-          <p className="text-text/60 mt-2">Browse our premium collection</p>
+            {/* Breadcrumb */}
+            <nav className="flex items-center gap-2 text-sm text-text/60 mb-4">
+              <Link href="/" className="hover:text-accent transition-colors">
+                Home
+              </Link>
+              <ChevronRight className="w-4 h-4" />
+              <Link href="/shop" className="hover:text-accent transition-colors">
+                Shop
+              </Link>
+              <ChevronRight className="w-4 h-4" />
+              <span className="text-text">{category.name}</span>
+            </nav>
+            
+            <h1 className="text-hero font-heading text-text">
+              {category.name}
+            </h1>
+            <p className="text-text/60 mt-2">
+              {filteredProducts.length} products available
+            </p>
+          </motion.div>
         </div>
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        {/* Subcategories Navigation */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1 }}
+          className="mb-10"
+        >
+          <div className="flex items-center gap-2 mb-4">
+            <span className="text-sm font-medium text-text/60">Filter by:</span>
+          </div>
+          
+          <div className="flex flex-wrap gap-3">
+            <button
+              onClick={() => setSelectedSubcategory('all')}
+              className={`px-5 py-2.5 rounded-lg text-sm font-medium transition-all duration-300 ${
+                selectedSubcategory === 'all'
+                  ? 'bg-accent text-white shadow-md'
+                  : 'bg-secondary/50 text-text/70 hover:bg-secondary hover:text-text'
+              }`}
+            >
+              All {category.name}
+            </button>
+            {category.subcategories.map((subcategory) => (
+              <button
+                key={subcategory.id}
+                onClick={() => setSelectedSubcategory(subcategory.slug)}
+                className={`px-5 py-2.5 rounded-lg text-sm font-medium transition-all duration-300 ${
+                  selectedSubcategory === subcategory.slug
+                    ? 'bg-accent text-white shadow-md'
+                    : 'bg-secondary/50 text-text/70 hover:bg-secondary hover:text-text'
+                }`}
+              >
+                {subcategory.name}
+              </button>
+            ))}
+          </div>
+        </motion.div>
+
         {/* Mobile Filter Toggle */}
         <button
           onClick={() => setShowFilters(!showFilters)}
@@ -82,38 +162,6 @@ function ShopContent() {
               showFilters ? 'block' : 'hidden'
             } md:block`}
           >
-            {/* Category Filter */}
-            <div className="mb-8">
-              <h3 className="font-heading text-lg font-semibold text-text mb-4">
-                Category
-              </h3>
-              <div className="space-y-2">
-                <button
-                  onClick={() => setSelectedCategory('all')}
-                  className={`block w-full text-left px-3 py-2 transition-colors ${
-                    selectedCategory === 'all'
-                      ? 'bg-accent text-white'
-                      : 'text-text/70 hover:bg-secondary'
-                  }`}
-                >
-                  All Products
-                </button>
-                {categories.map((category) => (
-                  <Link
-                    key={category.id}
-                    href={`/category/${category.slug}`}
-                    className={`block w-full text-left px-3 py-2 transition-colors ${
-                      selectedCategory === category.slug
-                        ? 'bg-accent text-white'
-                        : 'text-text/70 hover:bg-secondary'
-                    }`}
-                  >
-                    {category.name}
-                  </Link>
-                ))}
-              </div>
-            </div>
-
             {/* Price Filter */}
             <div className="mb-8">
               <h3 className="font-heading text-lg font-semibold text-text mb-4">
@@ -138,10 +186,10 @@ function ShopContent() {
             </div>
 
             {/* Clear Filters */}
-            {(selectedCategory !== 'all' || priceRange[0] !== 0 || priceRange[1] !== 200) && (
+            {(selectedSubcategory !== 'all' || priceRange[0] !== 0 || priceRange[1] !== 200) && (
               <button
                 onClick={() => {
-                  setSelectedCategory('all');
+                  setSelectedSubcategory('all');
                   setPriceRange([0, 200]);
                 }}
                 className="flex items-center gap-2 text-accent hover:text-text transition-colors"
@@ -179,10 +227,10 @@ function ShopContent() {
               </div>
             ) : (
               <div className="text-center py-12">
-                <p className="text-text/60">No products found matching your criteria.</p>
+                <p className="text-text/60">No products found in this category.</p>
                 <button
                   onClick={() => {
-                    setSelectedCategory('all');
+                    setSelectedSubcategory('all');
                     setPriceRange([0, 200]);
                   }}
                   className="mt-4 text-accent hover:text-text transition-colors"
@@ -198,10 +246,10 @@ function ShopContent() {
   );
 }
 
-export default function ShopPage() {
+export default function CategoryPage() {
   return (
     <Suspense fallback={<div className="min-h-screen pt-20 flex items-center justify-center">Loading...</div>}>
-      <ShopContent />
+      <CategoryContent />
     </Suspense>
   );
 }

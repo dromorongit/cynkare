@@ -3,6 +3,7 @@ export interface Product {
   name: string;
   slug: string;
   category: string;
+  subcategory?: string;
   price: number;
   originalPrice?: number;
   description: string;
@@ -14,6 +15,16 @@ export interface Product {
   concerns?: string[];
   rating?: number;
   reviewCount?: number;
+}
+
+export interface Subcategory {
+  id: string;
+  name: string;
+  slug: string;
+}
+
+export interface CategoryWithSubcategories extends Category {
+  subcategories: Subcategory[];
 }
 
 export interface CartItem {

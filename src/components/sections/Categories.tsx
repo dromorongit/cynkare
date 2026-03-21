@@ -3,7 +3,7 @@
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 import Link from 'next/link';
-import { categories } from '@/lib/products';
+import { categoriesWithSubcategories } from '@/lib/products';
 
 export default function Categories() {
   return (
@@ -27,7 +27,7 @@ export default function Categories() {
 
         {/* Categories Vertical Stack - Image Banners */}
         <div className="flex flex-col gap-6">
-          {categories.map((category, index) => (
+          {categoriesWithSubcategories.map((category, index) => (
             <motion.div
               key={category.id}
               initial={{ opacity: 0, y: 20 }}
@@ -35,7 +35,7 @@ export default function Categories() {
               viewport={{ once: true }}
               transition={{ duration: 0.4, delay: index * 0.1 }}
             >
-              <Link href={`/shop?category=${category.slug}`}>
+              <Link href={`/category/${category.slug}`}>
                 <div className="group relative h-[180px] rounded-lg overflow-hidden">
                   <Image
                     src={category.image}
@@ -46,10 +46,13 @@ export default function Categories() {
                   {/* Dark Overlay */}
                   <div className="absolute inset-0 bg-black/30 group-hover:bg-black/40 transition-colors duration-300" />
                   
-                  {/* Centered Button */}
-                  <div className="absolute inset-0 flex items-center justify-center">
+                  {/* Content */}
+                  <div className="absolute inset-0 flex flex-col items-center justify-center">
                     <span className="bg-white text-black px-5 py-2.5 rounded-lg font-medium text-sm shadow-lg group-hover:scale-105 transition-transform duration-300">
                       {category.name}
+                    </span>
+                    <span className="text-white/80 text-xs mt-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                      {category.subcategories.length} subcategories
                     </span>
                   </div>
                 </div>

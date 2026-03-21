@@ -5,8 +5,8 @@ import { useParams } from 'next/navigation';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 import Link from 'next/link';
-import { ChevronLeft, Minus, Plus, MessageCircle } from 'lucide-react';
-import { getProductBySlug, getRelatedProducts } from '@/lib/products';
+import { ChevronLeft, Minus, Plus, MessageCircle, Star } from 'lucide-react';
+import { getProductBySlug, getRelatedProducts, testimonials } from '@/lib/products';
 import { useCartStore } from '@/lib/store';
 import { formatPrice, convertToGHS } from '@/lib/utils';
 import Button from '@/components/ui/Button';
@@ -204,6 +204,74 @@ export default function ProductPage() {
               )}
             </div>
           </motion.div>
+        </div>
+
+        {/* Reviews Section */}
+        <div className="mt-20">
+          <h2 className="text-section font-heading text-text mb-8">
+            Customer Reviews
+          </h2>
+          
+          {/* Overall Rating */}
+          <div className="bg-primary p-6 mb-8">
+            <div className="flex items-center gap-4">
+              <div className="text-4xl font-bold text-text">4.8</div>
+              <div>
+                <div className="flex gap-1 mb-1">
+                  {[...Array(5)].map((_, i) => (
+                    <Star
+                      key={i}
+                      className={`w-5 h-5 ${
+                        i < 4
+                          ? 'fill-yellow-400 text-yellow-400'
+                          : 'text-gray-300'
+                      }`}
+                    />
+                  ))}
+                </div>
+                <p className="text-text/60 text-sm">Based on {testimonials.length} reviews</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Reviews List */}
+          <div className="space-y-6">
+            {testimonials.map((review, index) => (
+              <motion.div
+                key={review.id}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.4, delay: index * 0.1 }}
+                className="bg-primary p-8"
+              >
+                {/* Star Rating */}
+                <div className="flex gap-1 mb-4">
+                  {[...Array(5)].map((_, i) => (
+                    <Star
+                      key={i}
+                      className={`w-4 h-4 ${
+                        i < review.rating
+                          ? 'fill-yellow-400 text-yellow-400'
+                          : 'text-gray-300'
+                      }`}
+                    />
+                  ))}
+                </div>
+
+                {/* Review Text */}
+                <p className="text-text/70 leading-relaxed mb-4">
+                  &ldquo;{review.comment}&rdquo;
+                </p>
+
+                {/* Customer Info */}
+                <div className="flex items-center justify-between">
+                  <h4 className="font-medium text-text">{review.name}</h4>
+                  <span className="text-text/40 text-sm">{review.date}</span>
+                </div>
+              </motion.div>
+            ))}
+          </div>
         </div>
 
         {/* Related Products */}

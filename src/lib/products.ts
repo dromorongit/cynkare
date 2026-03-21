@@ -1,4 +1,4 @@
-import { Product, Category, Testimonial } from '@/types';
+import { Product, Category, Testimonial, Subcategory, CategoryWithSubcategories } from '@/types';
 
 export const skinConcerns = [
   { id: 'acne', name: 'Acne', slug: 'acne' },
@@ -34,11 +34,78 @@ export const categories: Category[] = [
   },
   {
     id: '5',
-    name: 'Hairs/Wig Caps',
-    slug: 'hairs-wig-caps',
+    name: 'Hair & Accessories',
+    slug: 'hair-accessories',
     image: 'https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=400&h=400&fit=crop',
   },
 ];
+
+export const categoriesWithSubcategories: CategoryWithSubcategories[] = [
+  {
+    id: '1',
+    name: 'Body Lotions',
+    slug: 'body-lotions',
+    image: 'https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=400&h=400&fit=crop',
+    subcategories: [
+      { id: '1-1', name: 'Whitening Lotions', slug: 'whitening-lotions' },
+      { id: '1-2', name: 'Moisturizing Lotions', slug: 'moisturizing-lotions' },
+      { id: '1-3', name: 'Body Butters', slug: 'body-butters' },
+    ],
+  },
+  {
+    id: '2',
+    name: 'Bath Soaps',
+    slug: 'bath-soaps',
+    image: 'https://images.unsplash.com/photo-1608248597279-f99d160bfcbc?w=400&h=400&fit=crop',
+    subcategories: [
+      { id: '2-1', name: 'African Black Soap', slug: 'african-black-soap' },
+      { id: '2-2', name: 'Whitening Soaps', slug: 'whitening-soaps' },
+      { id: '2-3', name: 'Organic Soaps', slug: 'organic-soaps' },
+    ],
+  },
+  {
+    id: '3',
+    name: 'Face Creams & Cleansers',
+    slug: 'face-creams-cleansers',
+    image: 'https://images.unsplash.com/photo-1571781926291-c477ebfd024b?w=400&h=400&fit=crop',
+    subcategories: [
+      { id: '3-1', name: 'Face Creams', slug: 'face-creams' },
+      { id: '3-2', name: 'Face Cleansers', slug: 'face-cleansers' },
+      { id: '3-3', name: 'Serums', slug: 'serums' },
+      { id: '3-4', name: 'Face Masks', slug: 'face-masks' },
+    ],
+  },
+  {
+    id: '4',
+    name: 'Perfumes',
+    slug: 'perfumes',
+    image: 'https://images.unsplash.com/photo-1541643600914-78b084683601?w=400&h=400&fit=crop',
+    subcategories: [
+      { id: '4-1', name: 'Men Perfumes', slug: 'men-perfumes' },
+      { id: '4-2', name: 'Women Perfumes', slug: 'women-perfumes' },
+      { id: '4-3', name: 'Deodorants', slug: 'deodorants' },
+      { id: '4-4', name: 'Body Mists', slug: 'body-mists' },
+      { id: '4-5', name: 'Perfume Oils', slug: 'perfume-oils' },
+    ],
+  },
+  {
+    id: '5',
+    name: 'Hair & Accessories',
+    slug: 'hair-accessories',
+    image: 'https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=400&h=400&fit=crop',
+    subcategories: [
+      { id: '5-1', name: 'Wig Caps', slug: 'wig-caps' },
+      { id: '5-2', name: 'Lace Closures', slug: 'lace-closures' },
+      { id: '5-3', name: 'Lace Frontals', slug: 'lace-frontals' },
+      { id: '5-4', name: 'Hair Care', slug: 'hair-care' },
+      { id: '5-5', name: 'Accessories', slug: 'hair-accessories' },
+    ],
+  },
+];
+
+export const getCategoryBySlug = (slug: string): CategoryWithSubcategories | undefined => {
+  return categoriesWithSubcategories.find((cat) => cat.slug === slug);
+};
 
 export const products: Product[] = [
   {
