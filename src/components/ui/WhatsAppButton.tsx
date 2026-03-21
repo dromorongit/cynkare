@@ -1,7 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { MessageCircle } from 'lucide-react';
+import { FaWhatsapp } from 'react-icons/fa';
 
 interface WhatsAppButtonProps {
   productName?: string;
@@ -32,7 +32,7 @@ export default function WhatsAppButton({ productName }: WhatsAppButtonProps) {
         
         {/* Button */}
         <div className="relative bg-green-500 text-white p-4 rounded-full shadow-lg hover:bg-green-600 transition-colors duration-300">
-          <MessageCircle className="w-6 h-6" />
+          <FaWhatsapp className="w-6 h-6" />
         </div>
       </div>
     </motion.a>
