@@ -1,12 +1,12 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { Star, Quote } from 'lucide-react';
+import { Star } from 'lucide-react';
 import { testimonials } from '@/lib/products';
 
 export default function Testimonials() {
   return (
-    <section className="py-20 bg-secondary/30">
+    <section className="py-20 bg-primary">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <motion.div
@@ -33,11 +33,8 @@ export default function Testimonials() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.4, delay: index * 0.1 }}
-              className="bg-primary p-8 relative"
+              className="bg-secondary/20 p-6"
             >
-              {/* Quote Icon */}
-              <Quote className="w-8 h-8 text-accent/20 absolute top-6 right-6" />
-              
               {/* Star Rating */}
               <div className="flex gap-1 mb-4">
                 {[...Array(5)].map((_, i) => (
@@ -52,14 +49,14 @@ export default function Testimonials() {
                 ))}
               </div>
 
-              {/* Comment */}
-              <p className="text-text/70 text-sm leading-relaxed mb-6">
+              {/* Review Text */}
+              <p className="text-text/70 text-sm leading-relaxed mb-4 text-left">
                 &ldquo;{testimonial.comment}&rdquo;
               </p>
 
               {/* Customer Name */}
               <div className="border-t border-accent/10 pt-4">
-                <h4 className="font-medium text-text">{testimonial.name}</h4>
+                <h4 className="font-medium text-text text-sm">{testimonial.name}</h4>
               </div>
             </motion.div>
           ))}
