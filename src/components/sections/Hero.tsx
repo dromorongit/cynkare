@@ -35,8 +35,8 @@ export default function Hero() {
               transition={{ delay: 0.3, duration: 0.6 }}
               className="text-hero font-heading text-text mb-6"
             >
-              Flawless Skin{' '}
-              <span className="text-accent">Starts Here</span>
+              Glow Beautiful.{' '}
+              <span className="text-accent">Smell Irresistible.</span>
             </motion.h1>
             <motion.p
               initial={{ opacity: 0, y: 20 }}
@@ -44,9 +44,7 @@ export default function Hero() {
               transition={{ delay: 0.4, duration: 0.6 }}
               className="text-body text-text/70 mb-8 max-w-lg"
             >
-              Premium skincare and beauty essentials for your glow. 
-              Discover our curated collection of luxury products designed to 
-              transform your skin.
+              Discover premium skincare, irresistible fragrances, and beauty essentials designed to enhance your glow and leave a lasting impression.
             </motion.p>
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -59,7 +57,7 @@ export default function Hero() {
               </Link>
               <Link href="/about">
                 <Button variant="outline" size="lg">
-                  Learn More
+                  Explore Collection
                 </Button>
               </Link>
             </motion.div>
