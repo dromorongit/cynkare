@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { MongoClient, Db } from 'mongodb';
+import { mongoClient } from '@/lib/mongodb';
 
 const staticCategories = [
   { name: 'Body Lotions', slug: 'body-lotions' },
@@ -10,12 +11,10 @@ const staticCategories = [
   { name: 'Skincare Sets', slug: 'skincare-sets' },
 ];
 
-async function getDatabase(): Promise<{ client: MongoClient; db: Db }> {
-  const uri = process.env.DATABASE_URL || 'mongodb://mongo:yWmmVabDenngmApSsOLydYuqqqkXElPl@caboose.proxy.rlwy.net:36367/cynkare?authSource=admin&directConnection=true&retryWrites=false';
-  const client = new MongoClient(uri);
-  await client.connect();
-  const db = client.db();
-  return { client, db };
+async function getDatabase(): Promise<{ db: Db }> {
+  await mongoClient.connect();
+  const db = mongoClient.db();
+  return { db };
 }
 
 export async function POST(request: NextRequest) {
@@ -28,36 +27,28 @@ export async function POST(request: NextRequest) {
     }
 
     const results = [];
-    let client: MongoClient | null = null;
 
-    try {
-      const { client: mongoClient, db } = await getDatabase();
-      client = mongoClient;
-      const categoriesCollection = db.collection('Category');
+    const { db } = await getDatabase();
+    const categoriesCollection = db.collection('Category');
 
-      for (const category of staticCategories) {
-        try {
-          const existing = await categoriesCollection.findOne({ slug: category.slug });
+    for (const category of staticCategories) {
+      try {
+        const existing = await categoriesCollection.findOne({ slug: category.slug });
 
-          if (!existing) {
-            await categoriesCollection.insertOne({
-              name: category.name,
-              slug: category.slug,
-              image: null,
-              createdAt: new Date(),
-              updatedAt: new Date(),
-            });
-            results.push({ status: 'created', category: category.name });
-          } else {
-            results.push({ status: 'exists', category: category.name });
-          }
-        } catch (error) {
-          results.push({ status: 'error', category: category.name, error: String(error) });
+        if (!existing) {
+          await categoriesCollection.insertOne({
+            name: category.name,
+            slug: category.slug,
+            image: null,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          });
+          results.push({ status: 'created', category: category.name });
+        } else {
+          results.push({ status: 'exists', category: category.name });
         }
-      }
-    } finally {
-      if (client) {
-        await client.close();
+      } catch (error) {
+        results.push({ status: 'error', category: category.name, error: String(error) });
       }
     }
 

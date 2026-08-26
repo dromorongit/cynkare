@@ -67,11 +67,11 @@ export default function ProductPage() {
     try {
       setLoading(true);
       
-      // Fetch all products to find by slug
-      const productsRes = await fetch('/api/products');
+      // Fetch product by slug
+      const productsRes = await fetch(`/api/products?slug=${encodeURIComponent(slug)}`);
       const products = await productsRes.json();
       
-      const foundProduct = products.find((p: Product) => p.slug === slug);
+      const foundProduct = products.length > 0 ? products[0] : null;
       setProduct(foundProduct || null);
       
       // Fetch related products (same category)

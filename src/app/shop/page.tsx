@@ -57,7 +57,7 @@ function ShopContent() {
     try {
       setLoading(true);
       
-      const productsRes = await fetch('/api/products');
+      const productsRes = await fetch('/api/products?limit=24');
       if (!productsRes.ok) {
         // Handle error gracefully by setting empty array
         console.error('Failed to fetch products:', productsRes.status);

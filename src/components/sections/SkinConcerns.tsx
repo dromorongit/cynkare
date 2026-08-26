@@ -27,7 +27,7 @@ export default function SkinConcerns() {
       setActiveConcern(slug);
       setLoading(true);
       try {
-        const response = await fetch(`/api/products?concern=${slug}`);
+        const response = await fetch(`/api/products?concern=${slug}&limit=1000`);
         if (response.ok) {
           const data = await response.json();
           setProducts(data);

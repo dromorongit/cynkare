@@ -1,6 +1,9 @@
 import mongoose from 'mongoose';
 
-const MONGODB_URI = process.env.DATABASE_URL || 'mongodb://mongo:yWmmVabDenngmApSsOLydYuqqqkXElPl@caboose.proxy.rlwy.net:36367/cynkare?authSource=admin&directConnection=true';
+const MONGODB_URI = process.env.DATABASE_URL;
+if (!MONGODB_URI) {
+  throw new Error('DATABASE_URL environment variable is not set');
+}
 
 const categorySchema = new mongoose.Schema({
   name: { type: String, unique: true, required: true },
@@ -20,7 +23,7 @@ const staticCategories = [
 
 async function main() {
   console.log('Connecting to MongoDB...');
-  await mongoose.connect(MONGODB_URI);
+  await mongoose.connect(MONGODB_URI as string);
   console.log('Connected to MongoDB');
 
   console.log('Seeding static categories...');

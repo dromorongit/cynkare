@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { MongoClient, ObjectId } from 'mongodb';
+import { mongoClient } from '@/lib/mongodb';
 
 // GET a single product by ID
 export async function GET(
@@ -7,64 +8,57 @@ export async function GET(
   { params }: { params: { id: string } }
 ) {
   try {
-    const uri = process.env.DATABASE_URL || 'mongodb://mongo:yWmmVabDenngmApSsOLydYuqqqkXElPl@caboose.proxy.rlwy.net:36367/cynkare?authSource=admin&directConnection=true&retryWrites=false';
-    const client = new MongoClient(uri);
+    await mongoClient.connect();
+    const db = mongoClient.db();
+    const collection = db.collection('Product');
+    
+    const product = await collection.findOne({ _id: new ObjectId(params.id) });
+    
+    if (!product) {
+      return NextResponse.json(
+        { error: 'Product not found' },
+        { status: 404 }
+      );
+    }
+    
+    // Get category info
+    let categoryInfo = null;
+    let subcategoryInfo = null;
     
     try {
-      await client.connect();
-      const db = client.db();
-      const collection = db.collection('Product');
-      
-      const product = await collection.findOne({ _id: new ObjectId(params.id) });
-      
-      if (!product) {
-        return NextResponse.json(
-          { error: 'Product not found' },
-          { status: 404 }
-        );
+      if (product.categoryId) {
+        const categoryCollection = db.collection('Category');
+        const category = await categoryCollection.findOne({ _id: new ObjectId(product.categoryId) });
+        if (category) {
+          categoryInfo = {
+            id: category._id.toString(),
+            name: category.name,
+            slug: category.slug,
+          };
+        }
       }
-      
-      // Get category info
-      let categoryInfo = null;
-      let subcategoryInfo = null;
-      
-      try {
-        if (product.categoryId) {
-          const categoryCollection = db.collection('Category');
-          const category = await categoryCollection.findOne({ _id: new ObjectId(product.categoryId) });
-          if (category) {
-            categoryInfo = {
-              id: category._id.toString(),
-              name: category.name,
-              slug: category.slug,
-            };
-          }
+    } catch {}
+    
+    try {
+      if (product.subcategoryId) {
+        const subcategoryCollection = db.collection('Subcategory');
+        const subcategory = await subcategoryCollection.findOne({ _id: new ObjectId(product.subcategoryId) });
+        if (subcategory) {
+          subcategoryInfo = {
+            id: subcategory._id.toString(),
+            name: subcategory.name,
+            slug: subcategory.slug,
+          };
         }
-      } catch {}
-      
-      try {
-        if (product.subcategoryId) {
-          const subcategoryCollection = db.collection('Subcategory');
-          const subcategory = await subcategoryCollection.findOne({ _id: new ObjectId(product.subcategoryId) });
-          if (subcategory) {
-            subcategoryInfo = {
-              id: subcategory._id.toString(),
-              name: subcategory.name,
-              slug: subcategory.slug,
-            };
-          }
-        }
-      } catch {}
-      
-      return NextResponse.json({
-        ...product,
-        id: product._id.toString(),
-        category: categoryInfo,
-        subcategory: subcategoryInfo,
-      });
-    } finally {
-      await client.close();
-    }
+      }
+    } catch {}
+    
+    return NextResponse.json({
+      ...product,
+      id: product._id.toString(),
+      category: categoryInfo,
+      subcategory: subcategoryInfo,
+    });
   } catch (error) {
     console.error('Error fetching product:', error);
     return NextResponse.json(
@@ -111,57 +105,51 @@ export async function PUT(
     }
 
     // Use MongoDB native driver
-    const uri = process.env.DATABASE_URL || 'mongodb://mongo:yWmmVabDenngmApSsOLydYuqqqkXElPl@caboose.proxy.rlwy.net:36367/cynkare?authSource=admin&directConnection=true&retryWrites=false';
-    const client = new MongoClient(uri);
     
-    try {
-      await client.connect();
-      const db = client.db();
-      const collection = db.collection('Product');
-      
-      const result = await collection.findOneAndUpdate(
-        { _id: new ObjectId(params.id) },
-        {
-          $set: {
-            name,
-            slug,
-            description,
-            shortDescription: shortDescription || null,
-            price: parseFloat(price),
-            originalPrice: originalPrice ? parseFloat(originalPrice) : null,
-            images: images || [],
-            additionalImages: additionalImages || [],
-            inStock: inStock ?? true,
-            stockQuantity: stockQuantity ? parseInt(stockQuantity) : 0,
-            sku: sku || null,
-            featured: featured ?? false,
-            newArrival: newArrival ?? false,
-            bestSeller: bestSeller ?? false,
-            onSale: onSale ?? false,
-            rating: rating ? parseFloat(rating) : null,
-            reviewCount: reviewCount ? parseInt(reviewCount) : null,
-            categoryId,
-            subcategoryId: subcategoryId || null,
-            updatedAt: new Date(),
-          }
-        },
-        { returnDocument: 'after' }
+    await mongoClient.connect();
+    const db = mongoClient.db();
+    const collection = db.collection('Product');
+    
+    const result = await collection.findOneAndUpdate(
+      { _id: new ObjectId(params.id) },
+      {
+        $set: {
+          name,
+          slug,
+          description,
+          shortDescription: shortDescription || null,
+          price: parseFloat(price),
+          originalPrice: originalPrice ? parseFloat(originalPrice) : null,
+          images: images || [],
+          additionalImages: additionalImages || [],
+          inStock: inStock ?? true,
+          stockQuantity: stockQuantity ? parseInt(stockQuantity) : 0,
+          sku: sku || null,
+          featured: featured ?? false,
+          newArrival: newArrival ?? false,
+          bestSeller: bestSeller ?? false,
+          onSale: onSale ?? false,
+          rating: rating ? parseFloat(rating) : null,
+          reviewCount: reviewCount ? parseInt(reviewCount) : null,
+          categoryId,
+          subcategoryId: subcategoryId || null,
+          updatedAt: new Date(),
+        }
+      },
+      { returnDocument: 'after' }
+    );
+    
+    if (!result) {
+      return NextResponse.json(
+        { error: 'Product not found' },
+        { status: 404 }
       );
-      
-      if (!result) {
-        return NextResponse.json(
-          { error: 'Product not found' },
-          { status: 404 }
-        );
-      }
-      
-      return NextResponse.json({
-        ...result,
-        id: result._id.toString(),
-      });
-    } finally {
-      await client.close();
     }
+    
+    return NextResponse.json({
+      ...result,
+      id: result._id.toString(),
+    });
   } catch (error: unknown) {
     console.error('Error updating product:', error);
     return NextResponse.json(
@@ -177,27 +165,20 @@ export async function DELETE(
   { params }: { params: { id: string } }
 ) {
   try {
-    const uri = process.env.DATABASE_URL || 'mongodb://mongo:yWmmVabDenngmApSsOLydYuqqqkXElPl@caboose.proxy.rlwy.net:36367/cynkare?authSource=admin&directConnection=true&retryWrites=false';
-    const client = new MongoClient(uri);
+    await mongoClient.connect();
+    const db = mongoClient.db();
+    const collection = db.collection('Product');
     
-    try {
-      await client.connect();
-      const db = client.db();
-      const collection = db.collection('Product');
-      
-      const result = await collection.deleteOne({ _id: new ObjectId(params.id) });
-      
-      if (result.deletedCount === 0) {
-        return NextResponse.json(
-          { error: 'Product not found' },
-          { status: 404 }
-        );
-      }
-      
-      return NextResponse.json({ message: 'Product deleted successfully' });
-    } finally {
-      await client.close();
+    const result = await collection.deleteOne({ _id: new ObjectId(params.id) });
+    
+    if (result.deletedCount === 0) {
+      return NextResponse.json(
+        { error: 'Product not found' },
+        { status: 404 }
+      );
     }
+    
+    return NextResponse.json({ message: 'Product deleted successfully' });
   } catch (error: unknown) {
     console.error('Error deleting product:', error);
     return NextResponse.json(

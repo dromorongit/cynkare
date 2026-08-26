@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { staticCategories } from '@/lib/categories';
 import { MongoClient } from 'mongodb';
+import { mongoClient } from '@/lib/mongodb';
 
 // Helper function to get category info from static categories
 function getCategoryInfo(categoryId: string) {
@@ -27,30 +28,25 @@ export async function GET() {
       console.log('Prisma failed fetching subcategories, using MongoDB native');
       
       // Fallback: fetch directly from MongoDB
-      const uri = process.env.DATABASE_URL || 'mongodb://mongo:yWmmVabDenngmApSsOLydYuqqqkXElPl@caboose.proxy.rlwy.net:36367/cynkare?authSource=admin&directConnection=true&retryWrites=false';
-      const client = new MongoClient(uri);
-      try {
-        await client.connect();
-        const db = client.db();
-        const collection = db.collection('Subcategory');
-        
-        const cursor = collection.find({}).sort({ createdAt: -1 });
-        const docs = await cursor.toArray();
-        
-        // Map to include category info from static categories
-        subcategories = docs.map(doc => ({
-          id: doc._id?.toString() || doc.id,
-          name: doc.name,
-          slug: doc.slug,
-          categoryId: doc.categoryId,
-          category: getCategoryInfo(doc.categoryId) || { id: '', name: '', slug: '' },
-          _count: { products: 0 },
-          createdAt: doc.createdAt,
-          updatedAt: doc.updatedAt,
-        }));
-      } finally {
-        await client.close();
-      }
+      
+      await mongoClient.connect();
+      const db = mongoClient.db();
+      const collection = db.collection('Subcategory');
+      
+      const cursor = collection.find({}).sort({ createdAt: -1 });
+      const docs = await cursor.toArray();
+      
+      // Map to include category info from static categories
+      subcategories = docs.map(doc => ({
+        id: doc._id?.toString() || doc.id,
+        name: doc.name,
+        slug: doc.slug,
+        categoryId: doc.categoryId,
+        category: getCategoryInfo(doc.categoryId) || { id: '', name: '', slug: '' },
+        _count: { products: 0 },
+        createdAt: doc.createdAt,
+        updatedAt: doc.updatedAt,
+      }));
     }
     return NextResponse.json(subcategories);
   } catch (error) {
@@ -62,45 +58,38 @@ export async function GET() {
 
 // Helper to create subcategory using MongoDB native driver
 async function createSubcategoryNative(name: string, slug: string, categoryId: string) {
-  const uri = process.env.DATABASE_URL || 'mongodb://mongo:yWmmVabDenngmApSsOLydYuqqqkXElPl@caboose.proxy.rlwy.net:36367/cynkare?authSource=admin&directConnection=true&retryWrites=false';
-  const client = new MongoClient(uri);
+  await mongoClient.connect();
+  const db = mongoClient.db();
+  const collection = db.collection('Subcategory');
   
-  try {
-    await client.connect();
-    const db = client.db();
-    const collection = db.collection('Subcategory');
-    
-    const categoryInfo = getCategoryInfo(categoryId);
-    if (!categoryInfo) {
-      throw new Error('Invalid category ID');
-    }
-    
-    // Insert the subcategory
-    const result = await collection.insertOne({
-      name,
-      slug,
-      categoryId,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    });
-    
-    // Return with embedded category info (like Prisma would)
-    return {
-      id: result.insertedId.toString(),
-      name,
-      slug,
-      categoryId,
-      category: {
-        id: categoryInfo.id,
-        name: categoryInfo.name,
-        slug: categoryInfo.slug,
-      },
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    };
-  } finally {
-    await client.close();
+  const categoryInfo = getCategoryInfo(categoryId);
+  if (!categoryInfo) {
+    throw new Error('Invalid category ID');
   }
+  
+  // Insert the subcategory
+  const result = await collection.insertOne({
+    name,
+    slug,
+    categoryId,
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  });
+  
+  // Return with embedded category info (like Prisma would)
+  return {
+    id: result.insertedId.toString(),
+    name,
+    slug,
+    categoryId,
+    category: {
+      id: categoryInfo.id,
+      name: categoryInfo.name,
+      slug: categoryInfo.slug,
+    },
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  };
 }
 
 // POST create a new subcategory

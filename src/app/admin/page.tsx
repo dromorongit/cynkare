@@ -39,7 +39,7 @@ export default function AdminOverviewPage() {
       setLoading(true);
       
       // Fetch products
-      const productsRes = await fetch('/api/products');
+      const productsRes = await fetch('/api/products?limit=1000');
       const products = await productsRes.json();
       
       // Fetch categories

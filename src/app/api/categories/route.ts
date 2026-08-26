@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { staticCategories } from '@/lib/categories';
 import { MongoClient } from 'mongodb';
+import { mongoClient } from '@/lib/mongodb';
 
 // GET all categories
 export async function GET() {
@@ -8,61 +9,55 @@ export async function GET() {
     console.log('Fetching categories from database...');
     
     // Try MongoDB native driver first
-    const uri = process.env.DATABASE_URL || 'mongodb://mongo:yWmmVabDenngmApSsOLydYuqqqkXElPl@caboose.proxy.rlwy.net:36367/cynkare?authSource=admin&directConnection=true&retryWrites=false';
-    const client = new MongoClient(uri);
     
-    try {
-      await client.connect();
-      const db = client.db();
-      const collection = db.collection('Category');
-      
-      const cursor = collection.find({}).sort({ createdAt: -1 });
-      const categories = await cursor.toArray();
-      
-      console.log('Categories found in DB:', categories.length);
-      
-      // If no categories in database, use static categories
-      if (categories.length === 0) {
-        console.log('Using static categories as fallback');
-        const staticCats = staticCategories.map(cat => ({
-          id: cat.id,
-          name: cat.name,
-          slug: cat.slug,
-          image: cat.image,
-          subcategories: [],
-          _count: { products: 0 }
-        }));
-        return NextResponse.json(staticCats);
-      }
-      
-      // Map categories to include subcategories and count
-      const categoriesWithData = await Promise.all(categories.map(async (cat) => {
-        // Get subcategories
-        const subcollection = db.collection('Subcategory');
-        const subcategories = await subcollection.find({ categoryId: cat._id.toString() }).toArray();
-        
-        // Get product count
-        const productCollection = db.collection('Product');
-        const productCount = await productCollection.countDocuments({ categoryId: cat._id.toString() });
-        
-        return {
-          id: cat._id.toString(),
-          name: cat.name,
-          slug: cat.slug,
-          image: cat.image || null,
-          subcategories: subcategories.map(s => ({
-            id: s._id.toString(),
-            name: s.name,
-            slug: s.slug,
-          })),
-          _count: { products: productCount }
-        };
+    await mongoClient.connect();
+    const db = mongoClient.db();
+    const collection = db.collection('Category');
+    
+    const cursor = collection.find({}).sort({ createdAt: -1 });
+    const categories = await cursor.toArray();
+    
+    console.log('Categories found in DB:', categories.length);
+    
+    // If no categories in database, use static categories
+    if (categories.length === 0) {
+      console.log('Using static categories as fallback');
+      const staticCats = staticCategories.map(cat => ({
+        id: cat.id,
+        name: cat.name,
+        slug: cat.slug,
+        image: cat.image,
+        subcategories: [],
+        _count: { products: 0 }
       }));
-      
-      return NextResponse.json(categoriesWithData);
-    } finally {
-      await client.close();
+      return NextResponse.json(staticCats);
     }
+    
+    // Map categories to include subcategories and count
+    const categoriesWithData = await Promise.all(categories.map(async (cat) => {
+      // Get subcategories
+      const subcollection = db.collection('Subcategory');
+      const subcategories = await subcollection.find({ categoryId: cat._id.toString() }).toArray();
+      
+      // Get product count
+      const productCollection = db.collection('Product');
+      const productCount = await productCollection.countDocuments({ categoryId: cat._id.toString() });
+      
+      return {
+        id: cat._id.toString(),
+        name: cat.name,
+        slug: cat.slug,
+        image: cat.image || null,
+        subcategories: subcategories.map(s => ({
+          id: s._id.toString(),
+          name: s.name,
+          slug: s.slug,
+        })),
+        _count: { products: productCount }
+      };
+    }));
+    
+    return NextResponse.json(categoriesWithData);
   } catch (error) {
     console.error('Error fetching categories:', error);
     // Return static categories as fallback on error
@@ -92,32 +87,26 @@ export async function POST(request: NextRequest) {
     }
 
     // Use MongoDB native driver
-    const uri = process.env.DATABASE_URL || 'mongodb://mongo:yWmmVabDenngmApSsOLydYuqqqkXElPl@caboose.proxy.rlwy.net:36367/cynkare?authSource=admin&directConnection=true&retryWrites=false';
-    const client = new MongoClient(uri);
     
-    try {
-      await client.connect();
-      const db = client.db();
-      const collection = db.collection('Category');
-      
-      const result = await collection.insertOne({
-        name,
-        slug,
-        image: image || null,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      });
+    await mongoClient.connect();
+    const db = mongoClient.db();
+    const collection = db.collection('Category');
+    
+    const result = await collection.insertOne({
+      name,
+      slug,
+      image: image || null,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    });
 
-      return NextResponse.json({
-        id: result.insertedId.toString(),
-        name,
-        slug,
-        image: image || null,
-        subcategories: [],
-      }, { status: 201 });
-    } finally {
-      await client.close();
-    }
+    return NextResponse.json({
+      id: result.insertedId.toString(),
+      name,
+      slug,
+      image: image || null,
+      subcategories: [],
+    }, { status: 201 });
   } catch (error: unknown) {
     console.error('Error creating category:', error);
     return NextResponse.json(

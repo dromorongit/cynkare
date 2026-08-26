@@ -62,7 +62,7 @@ function CategoryContent() {
       
       const foundCategory = staticCategories.find((c) => c.slug === categorySlug);
       if (foundCategory) {
-        const productsRes = await fetch(`/api/products?categoryId=${foundCategory.id}`);
+        const productsRes = await fetch(`/api/products?categoryId=${foundCategory.id}&limit=24`);
         const productsData = await productsRes.json();
         setProducts(productsData);
         
