@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { MongoClient, Db } from 'mongodb';
+import { Db } from 'mongodb';
 import { mongoClient } from '@/lib/mongodb';
 
 const staticCategories = [

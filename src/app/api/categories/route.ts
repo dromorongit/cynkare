@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { staticCategories } from '@/lib/categories';
-import { MongoClient } from 'mongodb';
 import { mongoClient } from '@/lib/mongodb';
 
 // GET all categories

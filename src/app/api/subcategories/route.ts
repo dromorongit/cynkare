@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { staticCategories } from '@/lib/categories';
-import { MongoClient } from 'mongodb';
 import { mongoClient } from '@/lib/mongodb';
 
 // Helper function to get category info from static categories
