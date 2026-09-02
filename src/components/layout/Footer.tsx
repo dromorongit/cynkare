@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { MapPin, Phone, Mail } from 'lucide-react';
 import { FaInstagram, FaFacebook, FaTiktok, FaSnapchatGhost } from 'react-icons/fa';
+import DeveloperCredits from './DeveloperCredits';
 
 export default function Footer() {
   const socialLinks = [
@@ -89,6 +90,7 @@ export default function Footer() {
           <p className="text-center text-text/60">
             © {new Date().getFullYear()} Cynkare. All rights reserved.
           </p>
+          <DeveloperCredits />
         </div>
       </div>
     </footer>
