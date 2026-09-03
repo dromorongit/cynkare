@@ -9,6 +9,10 @@ if (!uri) {
   throw new Error('DATABASE_URL environment variable is not set');
 }
 
-export const mongoClient = globalForMongo.mongoClient ?? new MongoClient(uri);
+export const mongoClient = globalForMongo.mongoClient ?? new MongoClient(uri, {
+  maxPoolSize: 10,
+  minPoolSize: 0,
+  maxIdleTimeMS: 30000,
+});
 
-if (process.env.NODE_ENV !== 'production') globalForMongo.mongoClient = mongoClient;
+globalForMongo.mongoClient = mongoClient;
